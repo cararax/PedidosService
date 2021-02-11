@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.*;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -95,13 +94,16 @@ public class PedidoController {
     }
 
     @PutMapping("/{id}")
-    public Optional<Pedido> atualizarPedido(@Valid @RequestBody Pedido pedidoAtualizado, @PathVariable Long id) {
+    public Pedido atualizarPedido(@Valid @RequestBody Pedido pedidoAtualizado, @PathVariable Long id) {
     	log.info("atualizarPedido PUT /{id}");
-        return repository.findById(id)
-                .map(pedido -> {
-                    pedido.setId(pedidoAtualizado.getId());
-                    return repository.save(pedido);
-                });
+         Pedido pedido = repository.findById(id).get();
+
+         pedido.setIdProduto(pedidoAtualizado.getIdProduto());
+         pedido.setIdUsuario(pedidoAtualizado.getIdUsuario());
+         pedido.setValorTotal(pedidoAtualizado.getValorTotal());
+
+         return repository.save(pedido);
+
     }
 
     @DeleteMapping("/{id}")
